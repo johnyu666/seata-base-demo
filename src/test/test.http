@@ -1,0 +1,13 @@
+### 一次成功的订单创建（三个分支事务全部提交）
+POST http://127.0.0.1:8081/order/create
+Content-Type: application/x-www-form-urlencoded
+
+userId=1&productId=1&price=2
+
+### 一次回滚事务 （因account 余额不足而导致事务失败，从而造成全部回滚）
+
+POST http://127.0.0.1:8081/order/create
+Content-Type: application/x-www-form-urlencoded
+
+userId=1&productId=1&price=20
+
