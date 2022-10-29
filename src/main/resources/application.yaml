@@ -1,14 +1,16 @@
 server:
   port: 8081 # 端口
-
 spring:
   application:
-    name: multi-datasource-service  # 应用名
-
+    name: seata-base-demo  # 应用名
   datasource:
     # dynamic-datasource-spring-boot-starter 动态数据源的配配项，对应 DynamicDataSourceProperties 类
     dynamic:
-      primary: order-ds # 设置默认的数据源或者数据源组，默认值即为 master
+      # 将对所的datasource进行针对seata的代理，规则如下:
+      # @Transactional: 将成为RM；@GlobalTransactional：将成为TM
+      seata: true
+
+      primary: order-ds
       datasource:
         # 订单 order 数据源配置
         order-ds:
@@ -16,7 +18,7 @@ spring:
           driver-class-name: com.mysql.jdbc.Driver
           username: root
           password: 123
-        # 账户 pay 数据源配置
+        # 账户 数据源配置
         account-ds:
           url: jdbc:mysql://127.0.0.1:3306/seata_account?useSSL=false&useUnicode=true&characterEncoding=UTF-8
           driver-class-name: com.mysql.jdbc.Driver
@@ -28,7 +30,7 @@ spring:
           driver-class-name: com.mysql.jdbc.Driver
           username: root
           password: 123
-      seata: true # 是否启动对 Seata 的集成
+
 
 # Seata 配置项，对应 SeataProperties 类
 seata:
@@ -38,7 +40,12 @@ seata:
   service:
     # 虚拟组和分组的映射
     vgroup-mapping:
-      multi-datasource-service-group: default
+      seata-base-demo-group: default #key值与seata.tx-service-group相同
     # 分组和 Seata 服务的映射
     grouplist:
-      default: 127.0.0.1:18091
+      default: 127.0.0.1:18091 #Seata TC Server,启动方法见项目中的：seata1.1.zip
+
+#  seata 段的配置解释：
+#  application-id（名称为：seata-base-demo）属于某个 tx-service-group，group的名称为 ：seata-base-demo-group
+#  而seata-base-demo-group又映射到名字 default,它成为一个钩子
+#  default做为钩子，映射到： Seata TC Server 的服务地址上

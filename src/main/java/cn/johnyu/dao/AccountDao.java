@@ -1,4 +1,4 @@
-package cn.johnyu.order;
+package cn.johnyu.dao;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
